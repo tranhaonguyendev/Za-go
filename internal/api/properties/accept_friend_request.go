@@ -1,7 +1,7 @@
 package properties
 
 import (
-	"github.com/nguyendev/zago/internal/worker"
+	"github.com/tranhaonguyendev/za-go/internal/worker"
 )
 
 func (p *PropertiesAPI) AcceptFriendRequest(userID string, language string) (*worker.User, error) {

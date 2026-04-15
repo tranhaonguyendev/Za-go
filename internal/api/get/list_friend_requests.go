@@ -4,7 +4,7 @@ import (
 	"net/url"
 	"strconv"
 
-	"github.com/nguyendev/zago/internal/util"
+	"github.com/tranhaonguyendev/za-go/internal/util"
 )
 
 func (g *GetAPI) ListFriendRequests() (any, error) {

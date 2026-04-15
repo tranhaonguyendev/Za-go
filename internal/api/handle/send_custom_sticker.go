@@ -3,8 +3,8 @@ package handle
 import (
 	"fmt"
 
-	core "github.com/nguyendev/zago/internal/core"
-	"github.com/nguyendev/zago/internal/util"
+	core "github.com/tranhaonguyendev/za-go/internal/core"
+	"github.com/tranhaonguyendev/za-go/internal/util"
 )
 
 func (s *SendAPI) SendCustomSticker(staticImgURL string, animationImgURL string, threadID string, threadType core.ThreadType, reply string, width int, height int, ttl int, ai bool) (any, error) {

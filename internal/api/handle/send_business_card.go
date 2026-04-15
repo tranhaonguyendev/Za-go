@@ -3,8 +3,8 @@ package handle
 import (
 	"fmt"
 
-	core "github.com/nguyendev/zago/internal/core"
-	"github.com/nguyendev/zago/internal/util"
+	core "github.com/tranhaonguyendev/za-go/internal/core"
+	"github.com/tranhaonguyendev/za-go/internal/util"
 )
 
 func (s *SendAPI) SendBusinessCard(userID string, qrCodeURL string, threadID string, threadType core.ThreadType, phone string, ttl int) (any, error) {

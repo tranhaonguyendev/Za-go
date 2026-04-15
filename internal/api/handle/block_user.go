@@ -1,6 +1,6 @@
 package handle
 
-import "github.com/nguyendev/zago/internal/worker"
+import "github.com/tranhaonguyendev/za-go/internal/worker"
 
 func (s *SendAPI) BlockUser(userID string) (*worker.User, error) {
 	form, err := s.EncodedForm(map[string]any{"fid": userID, "imei": s.IMEIValue()})

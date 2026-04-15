@@ -7,9 +7,9 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/nguyendev/zago/internal/app"
-	core "github.com/nguyendev/zago/internal/core"
-	"github.com/nguyendev/zago/internal/util"
+	"github.com/tranhaonguyendev/za-go/internal/app"
+	core "github.com/tranhaonguyendev/za-go/internal/core"
+	"github.com/tranhaonguyendev/za-go/internal/util"
 )
 
 func (u *UploadAPI) UploadImage(filePath string, threadID string, threadType core.ThreadType) (map[string]any, error) {

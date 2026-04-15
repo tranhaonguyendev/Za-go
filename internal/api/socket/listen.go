@@ -7,9 +7,9 @@ import (
 
 	"github.com/gorilla/websocket"
 
-	core "github.com/nguyendev/zago/internal/core"
-	"github.com/nguyendev/zago/internal/util"
-	"github.com/nguyendev/zago/internal/worker"
+	core "github.com/tranhaonguyendev/za-go/internal/core"
+	"github.com/tranhaonguyendev/za-go/internal/util"
+	"github.com/tranhaonguyendev/za-go/internal/worker"
 )
 
 func (s *SocketAPI) handleMessageObject(raw any, threadType core.ThreadType) {

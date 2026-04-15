@@ -3,8 +3,8 @@ package message
 import (
 	"encoding/json"
 
-	"github.com/nguyendev/zago/internal/util"
-	"github.com/nguyendev/zago/internal/worker"
+	"github.com/tranhaonguyendev/za-go/internal/util"
+	"github.com/tranhaonguyendev/za-go/internal/worker"
 )
 
 func (m *MessageAPI) DeleteMessage(msgID any, ownerID any, clientMsgID any, groupID string, onlyMe bool) (*worker.Group, error) {

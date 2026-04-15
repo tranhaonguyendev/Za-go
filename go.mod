@@ -1,4 +1,4 @@
-module github.com/nguyendev/zago
+module github.com/tranhaonguyendev/za-go
 
 go 1.22.0
 

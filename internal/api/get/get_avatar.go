@@ -3,7 +3,7 @@ package get
 import (
 	"fmt"
 
-	"github.com/nguyendev/zago/internal/util"
+	"github.com/tranhaonguyendev/za-go/internal/util"
 )
 
 func (g *GetAPI) GetAvatar(userID string, avatarSize int) (any, error) {

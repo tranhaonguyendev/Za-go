@@ -3,9 +3,9 @@ package handle
 import (
 	"fmt"
 
-	core "github.com/nguyendev/zago/internal/core"
-	"github.com/nguyendev/zago/internal/util"
-	"github.com/nguyendev/zago/internal/worker"
+	core "github.com/tranhaonguyendev/za-go/internal/core"
+	"github.com/tranhaonguyendev/za-go/internal/util"
+	"github.com/tranhaonguyendev/za-go/internal/worker"
 )
 
 func (s *SendAPI) SendMultiReaction(messageObject *worker.MessageObject, reactionIcon string, threadID string, threadType core.ThreadType, reactionType int, numreact int) (any, error) {

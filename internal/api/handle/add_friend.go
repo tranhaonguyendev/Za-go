@@ -1,8 +1,8 @@
 package handle
 
 import (
-	"github.com/nguyendev/zago/internal/util"
-	"github.com/nguyendev/zago/internal/worker"
+	"github.com/tranhaonguyendev/za-go/internal/util"
+	"github.com/tranhaonguyendev/za-go/internal/worker"
 )
 
 func (s *SendAPI) AddFriend(userID string, msg string, language string) (*worker.User, error) {

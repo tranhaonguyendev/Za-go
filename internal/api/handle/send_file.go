@@ -9,8 +9,8 @@ import (
 	"strconv"
 	"strings"
 
-	core "github.com/nguyendev/zago/internal/core"
-	"github.com/nguyendev/zago/internal/util"
+	core "github.com/tranhaonguyendev/za-go/internal/core"
+	"github.com/tranhaonguyendev/za-go/internal/util"
 )
 
 func (s *SendAPI) SendFile(fileURL string, threadID string, threadType core.ThreadType, fileName string, fileSize int, extension string, ttl int, localPath string) (any, error) {

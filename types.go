@@ -1,9 +1,9 @@
 package zago
 
 import (
-	socketapi "github.com/nguyendev/zago/internal/api/socket"
-	core "github.com/nguyendev/zago/internal/core"
-	"github.com/nguyendev/zago/internal/worker"
+	socketapi "github.com/tranhaonguyendev/za-go/internal/api/socket"
+	core "github.com/tranhaonguyendev/za-go/internal/core"
+	"github.com/tranhaonguyendev/za-go/internal/worker"
 )
 
 type Message = worker.Message

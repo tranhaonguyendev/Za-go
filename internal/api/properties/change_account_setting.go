@@ -1,8 +1,8 @@
 package properties
 
 import (
-	"github.com/nguyendev/zago/internal/util"
-	"github.com/nguyendev/zago/internal/worker"
+	"github.com/tranhaonguyendev/za-go/internal/util"
+	"github.com/tranhaonguyendev/za-go/internal/worker"
 )
 
 func (p *PropertiesAPI) ChangeAccountSetting(name string, dob string, gender int, biz map[string]any, language string) (*worker.User, error) {

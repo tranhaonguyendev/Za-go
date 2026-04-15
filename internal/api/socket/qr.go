@@ -12,7 +12,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nguyendev/zago/internal/util"
+	"github.com/tranhaonguyendev/za-go/internal/util"
 )
 
 func applyHeaders(req *http.Request, headers map[string]string) {

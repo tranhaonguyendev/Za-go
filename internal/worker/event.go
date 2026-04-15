@@ -4,7 +4,7 @@ import (
 	"sync"
 	"time"
 
-	core "github.com/nguyendev/zago/internal/core"
+	core "github.com/tranhaonguyendev/za-go/internal/core"
 )
 
 type GroupEventType string

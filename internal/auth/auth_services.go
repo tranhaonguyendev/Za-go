@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/nguyendev/zago/internal/app"
-	"github.com/nguyendev/zago/internal/util"
+	"github.com/tranhaonguyendev/za-go/internal/app"
+	"github.com/tranhaonguyendev/za-go/internal/util"
 )
 
 type LoginAuth struct {

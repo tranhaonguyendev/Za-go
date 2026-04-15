@@ -7,12 +7,12 @@ import (
 	"strconv"
 	"strings"
 
-	base "github.com/nguyendev/zago/internal/api/common"
-	upload "github.com/nguyendev/zago/internal/api/properties/host"
-	"github.com/nguyendev/zago/internal/app"
-	core "github.com/nguyendev/zago/internal/core"
-	"github.com/nguyendev/zago/internal/util"
-	"github.com/nguyendev/zago/internal/worker"
+	base "github.com/tranhaonguyendev/za-go/internal/api/common"
+	upload "github.com/tranhaonguyendev/za-go/internal/api/properties/host"
+	"github.com/tranhaonguyendev/za-go/internal/app"
+	core "github.com/tranhaonguyendev/za-go/internal/core"
+	"github.com/tranhaonguyendev/za-go/internal/util"
+	"github.com/tranhaonguyendev/za-go/internal/worker"
 )
 
 type SendAPI struct {

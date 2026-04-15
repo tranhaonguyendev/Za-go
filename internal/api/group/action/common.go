@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"strings"
 
-	base "github.com/nguyendev/zago/internal/api/common"
-	"github.com/nguyendev/zago/internal/app"
-	"github.com/nguyendev/zago/internal/util"
-	"github.com/nguyendev/zago/internal/worker"
+	base "github.com/tranhaonguyendev/za-go/internal/api/common"
+	"github.com/tranhaonguyendev/za-go/internal/app"
+	"github.com/tranhaonguyendev/za-go/internal/util"
+	"github.com/tranhaonguyendev/za-go/internal/worker"
 )
 
 type ActionAPI struct{ *base.BaseAPI }

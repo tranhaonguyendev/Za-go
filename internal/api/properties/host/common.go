@@ -8,10 +8,10 @@ import (
 	"strings"
 	"time"
 
-	base "github.com/nguyendev/zago/internal/api/common"
-	"github.com/nguyendev/zago/internal/app"
-	core "github.com/nguyendev/zago/internal/core"
-	"github.com/nguyendev/zago/internal/worker"
+	base "github.com/tranhaonguyendev/za-go/internal/api/common"
+	"github.com/tranhaonguyendev/za-go/internal/app"
+	core "github.com/tranhaonguyendev/za-go/internal/core"
+	"github.com/tranhaonguyendev/za-go/internal/worker"
 )
 
 type UploadAPI struct {

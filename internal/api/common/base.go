@@ -11,10 +11,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nguyendev/zago/internal/app"
-	core "github.com/nguyendev/zago/internal/core"
-	"github.com/nguyendev/zago/internal/util"
-	"github.com/nguyendev/zago/internal/worker"
+	"github.com/tranhaonguyendev/za-go/internal/app"
+	core "github.com/tranhaonguyendev/za-go/internal/core"
+	"github.com/tranhaonguyendev/za-go/internal/util"
+	"github.com/tranhaonguyendev/za-go/internal/worker"
 )
 
 type BaseAPI struct {

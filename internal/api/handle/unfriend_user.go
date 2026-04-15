@@ -3,7 +3,7 @@ package handle
 import (
 	"fmt"
 
-	"github.com/nguyendev/zago/internal/util"
+	"github.com/tranhaonguyendev/za-go/internal/util"
 )
 
 func (s *SendAPI) UnfriendUser(userID string, language string) (map[string]any, error) {

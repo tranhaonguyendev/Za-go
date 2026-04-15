@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"time"
 
-	core "github.com/nguyendev/zago/internal/core"
-	"github.com/nguyendev/zago/internal/util"
-	"github.com/nguyendev/zago/internal/worker"
+	core "github.com/tranhaonguyendev/za-go/internal/core"
+	"github.com/tranhaonguyendev/za-go/internal/util"
+	"github.com/tranhaonguyendev/za-go/internal/worker"
 )
 
 func (s *SendAPI) SendLocalImage(imagePath string, threadID string, threadType core.ThreadType, width int, height int, message *worker.Message, customPayload map[string]any, ttl int) (any, error) {

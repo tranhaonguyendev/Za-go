@@ -81,5 +81,5 @@ npm run docs:preview
 
 ## Notes
 
-- The current module path is `github.com/nguyendev/zago`
+- The current module path is `github.com/tranhaonguyendev/za-go`
 - If you publish this under a different repository path, update `go.mod`

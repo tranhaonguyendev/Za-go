@@ -4,9 +4,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/nguyendev/zago/internal/app"
-	"github.com/nguyendev/zago/internal/util"
-	"github.com/nguyendev/zago/internal/worker"
+	"github.com/tranhaonguyendev/za-go/internal/app"
+	"github.com/tranhaonguyendev/za-go/internal/util"
+	"github.com/tranhaonguyendev/za-go/internal/worker"
 )
 
 func (p *PropertiesAPI) ChangeAccountAvatar(filePath string, width int, height int, language string, size int64) (*worker.User, error) {

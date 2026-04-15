@@ -3,9 +3,9 @@ package properties
 import (
 	"fmt"
 
-	core "github.com/nguyendev/zago/internal/core"
-	"github.com/nguyendev/zago/internal/util"
-	"github.com/nguyendev/zago/internal/worker"
+	core "github.com/tranhaonguyendev/za-go/internal/core"
+	"github.com/tranhaonguyendev/za-go/internal/util"
+	"github.com/tranhaonguyendev/za-go/internal/worker"
 )
 
 func (p *PropertiesAPI) MarkAsRead(msgID any, cliMsgID any, senderID any, threadID string, threadType core.ThreadType, method string) (bool, error) {

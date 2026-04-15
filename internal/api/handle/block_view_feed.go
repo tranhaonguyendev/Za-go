@@ -1,6 +1,6 @@
 package handle
 
-import "github.com/nguyendev/zago/internal/worker"
+import "github.com/tranhaonguyendev/za-go/internal/worker"
 
 func (s *SendAPI) BlockViewFeed(userID string, isBlockFeed bool) (*worker.User, error) {
 	form, err := s.EncodedForm(map[string]any{"fid": userID, "isBlockFeed": map[bool]int{true: 1, false: 0}[isBlockFeed], "imei": s.IMEIValue()})

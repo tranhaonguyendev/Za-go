@@ -8,8 +8,8 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	coreparse "github.com/nguyendev/zago/internal/core"
-	"github.com/nguyendev/zago/internal/util"
+	coreparse "github.com/tranhaonguyendev/za-go/internal/core"
+	"github.com/tranhaonguyendev/za-go/internal/util"
 )
 
 type Message struct {
