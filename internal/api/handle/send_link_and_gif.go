@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"html"
 	"io"
+	"net/url"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -38,6 +39,102 @@ func pickTitleTag(htmlText string) string {
 	return ""
 }
 
+func pickFavicon(htmlText string, baseURL string) string {
+	re1 := regexp.MustCompile(`(?is)<link[^>]+rel=["'](?:shortcut icon|icon)["'][^>]+href=["']([^"']+)["']`)
+	if m := re1.FindStringSubmatch(htmlText); len(m) > 1 {
+		return resolveMaybeRelativeURL(baseURL, strings.TrimSpace(m[1]))
+	}
+	re2 := regexp.MustCompile(`(?is)<link[^>]+href=["']([^"']+)["'][^>]+rel=["'](?:shortcut icon|icon)["']`)
+	if m := re2.FindStringSubmatch(htmlText); len(m) > 1 {
+		return resolveMaybeRelativeURL(baseURL, strings.TrimSpace(m[1]))
+	}
+	if parsed, err := url.Parse(baseURL); err == nil && parsed.Scheme != "" && parsed.Host != "" {
+		return parsed.Scheme + "://" + parsed.Host + "/favicon.ico"
+	}
+	return ""
+}
+
+func resolveMaybeRelativeURL(baseURL string, raw string) string {
+	raw = strings.TrimSpace(raw)
+	if raw == "" {
+		return ""
+	}
+	if strings.HasPrefix(strings.ToLower(raw), "http://") || strings.HasPrefix(strings.ToLower(raw), "https://") {
+		return raw
+	}
+	base, err := url.Parse(baseURL)
+	if err != nil {
+		return raw
+	}
+	ref, err := url.Parse(raw)
+	if err != nil {
+		return raw
+	}
+	return base.ResolveReference(ref).String()
+}
+
+func (s *SendAPI) uploadThumbToZalo(thumbURL string) string {
+	thumbURL = strings.TrimSpace(thumbURL)
+	if thumbURL == "" {
+		return ""
+	}
+
+	resp, err := s.State.GetSessionEx(thumbURL, nil, 15*time.Second, true, nil)
+	if err != nil {
+		return thumbURL
+	}
+	defer resp.Body.Close()
+
+	buf, err := io.ReadAll(resp.Body)
+	if err != nil || len(buf) == 0 {
+		return thumbURL
+	}
+
+	ctype := strings.ToLower(strings.TrimSpace(strings.Split(resp.Header.Get("Content-Type"), ";")[0]))
+	if ctype == "" {
+		ctype = "image/jpeg"
+	}
+
+	fileName := map[string]string{
+		"image/jpeg": "thumb.jpg",
+		"image/jpg":  "thumb.jpg",
+		"image/png":  "thumb.png",
+		"image/gif":  "thumb.gif",
+		"image/webp": "thumb.webp",
+	}[ctype]
+	if fileName == "" {
+		fileName = "thumb.jpg"
+	}
+
+	data, err := s.PostMultipartJSON(
+		"https://tt-files-wpa.chat.zalo.me/api/message/photo_original/upload",
+		s.Query(map[string]any{"zpw_ver": 645, "zpw_type": s.APILoginType}),
+		nil,
+		[]app.MultipartFile{{
+			FieldName:   "fileContent",
+			FileName:    fileName,
+			Content:     buf,
+			ContentType: ctype,
+		}},
+		15*time.Second,
+	)
+	if err != nil {
+		return thumbURL
+	}
+
+	decoded, err := s.ParseRaw(data)
+	if err != nil {
+		return thumbURL
+	}
+	m := util.AsMap(decoded)
+	for _, k := range []string{"normalUrl", "hdUrl", "thumb", "url"} {
+		if v := strings.TrimSpace(util.AsString(m[k])); v != "" {
+			return v
+		}
+	}
+	return thumbURL
+}
+
 func (s *SendAPI) fetchLinkData(link string) (map[string]any, error) {
 	u := strings.TrimSpace(link)
 	if u == "" {
@@ -59,7 +156,7 @@ func (s *SendAPI) fetchLinkData(link string) (map[string]any, error) {
 	host := resp.Request.URL.Hostname()
 	ctype := strings.ToLower(resp.Header.Get("Content-Type"))
 	if !strings.Contains(ctype, "text/html") && !strings.Contains(ctype, "application/xhtml") {
-		return map[string]any{"href": finalURL, "src": host, "title": "", "desc": finalURL, "thumb": "", "media": map[string]any{"type": 0, "count": 0, "mediaTitle": "", "artist": "", "streamUrl": "", "stream_icon": ""}}, nil
+		return map[string]any{"href": finalURL, "src": host, "title": "", "desc": "", "thumb": "", "icon": ""}, nil
 	}
 	htmlText := string(body)
 	title := pickMetaTag(htmlText, []string{"og:title", "twitter:title"})
@@ -67,15 +164,16 @@ func (s *SendAPI) fetchLinkData(link string) (map[string]any, error) {
 		title = pickTitleTag(htmlText)
 	}
 	desc := pickMetaTag(htmlText, []string{"og:description", "twitter:description", "description"})
-	if desc == "" {
-		desc = finalURL
-	}
 	thumb := pickMetaTag(htmlText, []string{"og:image", "twitter:image", "twitter:image:src"})
+	if thumb != "" {
+		thumb = resolveMaybeRelativeURL(finalURL, thumb)
+	}
 	href := pickMetaTag(htmlText, []string{"og:url"})
 	if href == "" {
 		href = finalURL
 	}
-	return map[string]any{"href": href, "src": host, "title": title, "desc": desc, "thumb": thumb, "media": map[string]any{"type": 0, "count": 0, "mediaTitle": "", "artist": "", "streamUrl": "", "stream_icon": ""}}, nil
+	icon := pickFavicon(htmlText, finalURL)
+	return map[string]any{"href": href, "src": host, "title": title, "desc": desc, "thumb": thumb, "icon": icon}, nil
 }
 
 func (s *SendAPI) SendLink(linkURL string, threadID string, threadType core.ThreadType, message *worker.Message, ttl int) (any, error) {
@@ -87,7 +185,70 @@ func (s *SendAPI) SendLink(linkURL string, threadID string, threadType core.Thre
 	if message != nil {
 		msg = message.Text
 	}
-	payload := map[string]any{"msg": msg, "href": linkData["href"], "src": linkData["src"], "title": linkData["title"], "desc": linkData["desc"], "thumb": linkData["thumb"], "type": 0, "media": util.JSONString(map[string]any{"type": 0, "count": 0, "mediaTitle": "", "artist": "", "streamUrl": "", "stream_icon": ""}), "ttl": ttl, "clientId": util.Now()}
+
+	customTitle := strings.TrimSpace(util.AsString(linkData["title"]))
+	customDesc := strings.TrimSpace(util.AsString(linkData["desc"]))
+	customSrc := strings.TrimSpace(util.AsString(linkData["src"]))
+	customHref := strings.TrimSpace(util.AsString(linkData["href"]))
+	customIcon := strings.TrimSpace(util.AsString(linkData["icon"]))
+	customThumb := strings.TrimSpace(util.AsString(linkData["thumb"]))
+	cdnThumb := ""
+	if customThumb != "" {
+		cdnThumb = s.uploadThumbToZalo(customThumb)
+	}
+
+	innerParams := map[string]any{
+		"redirect_url":          "",
+		"src":                   customSrc,
+		"mediaTitle":            customTitle,
+		"title":                 customTitle,
+		"desc":                  customDesc,
+		"streamUrl":             "",
+		"type":                  12,
+		"linkType":              12,
+		"artist":                "",
+		"count":                 "",
+		"stream_icon":           customIcon,
+		"mediaId":               "",
+		"video_duration":        0,
+		"arid":                  0,
+		"href":                  customHref,
+		"tType":                 1,
+		"tWidth":                486,
+		"tHeight":               256,
+		"width":                 250,
+		"height":                250,
+		"thumb_renew":           cdnThumb,
+		"local_path_thumb_link": cdnThumb,
+		"thumb_src_type":        1,
+		"link_sub_type":         1,
+		"video_brain": map[string]any{
+			"thumb": cdnThumb,
+			"title": customTitle,
+			"desc":  customDesc,
+			"src":   customSrc,
+			"href":  customHref,
+			"icon":  customIcon,
+		},
+	}
+
+	payload := map[string]any{
+		"msg":         msg,
+		"title":       customTitle,
+		"description": customDesc,
+		"href":        customHref,
+		"thumb":       cdnThumb,
+		"thumb_renew": cdnThumb,
+		"thumbWidth":  486,
+		"thumbHeight": 256,
+		"icon":        customIcon,
+		"src":         customSrc,
+		"type":        12,
+		"action":      "recommened.link",
+		"params":      util.JSONString(innerParams),
+		"ttl":         ttl,
+		"clientId":    util.Now(),
+	}
 	if message != nil && message.Mention != "" {
 		payload["mentionInfo"] = message.Mention
 	} else if threadType == core.GROUP {
