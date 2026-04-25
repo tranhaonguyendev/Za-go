@@ -28,6 +28,11 @@ var MessageStyle = worker.MessageStyle
 var MultiMsgStyle = worker.MultiMsgStyle
 var MessageReaction = worker.MessageReaction
 var Mention = worker.Mention
+var NewUser = worker.UserFromDict
+var NewGroup = worker.GroupFromDict
+var NewContextObject = worker.ContextFromDict
+var NewMessageObject = worker.MessageObjectFromDict
+var NewEventObject = worker.EventObjectFromDict
 
 const (
 	ThreadTypeUSER  = core.USER
