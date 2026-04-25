@@ -6,7 +6,8 @@ import (
 	"strconv"
 	"strings"
 	"unicode"
-	"unicode/utf8"
+
+	"github.com/tranhaonguyendev/za-go/internal/util"
 )
 
 type ParsedStyle struct {
@@ -109,6 +110,7 @@ func ParseMarkdown(text string) (string, []ParsedStyle) {
 	}
 
 	out := make([]rune, 0, n)
+	outUnits := 0
 	elements := make([]ParsedStyle, 0)
 	stack := map[string][]int{}
 	sizeStack := map[string]int{}
@@ -123,15 +125,15 @@ func ParseMarkdown(text string) (string, []ParsedStyle) {
 				start, ok := sizeStack[sz]
 				if ok {
 					delete(sizeStack, sz)
-					end := len(out)
+					end := outUnits
 					if end > start {
 						elements = append(elements, ParsedStyle{Start: start, End: end, Length: end - start, Type: "font", Size: sz})
 					}
 				} else {
-					sizeStack[sz] = len(out)
+					sizeStack[sz] = outUnits
 				}
 			}
-			i += utf8.RuneCountInString(match)
+			i += len([]rune(match))
 			continue
 		}
 
@@ -144,6 +146,7 @@ func ParseMarkdown(text string) (string, []ParsedStyle) {
 		}
 		if matched == "" {
 			out = append(out, runes[i])
+			outUnits += util.UTF16RuneLen(runes[i])
 			i++
 			continue
 		}
@@ -163,7 +166,7 @@ func ParseMarkdown(text string) (string, []ParsedStyle) {
 			def := tokenToType[matched]
 			start := st[len(st)-1]
 			stack[matched] = st[:len(st)-1]
-			end := len(out)
+			end := outUnits
 			if end > start {
 				e := ParsedStyle{Start: start, End: end, Length: end - start, Type: def.kind}
 				if def.color != "" {
@@ -176,12 +179,13 @@ func ParseMarkdown(text string) (string, []ParsedStyle) {
 		}
 
 		if canOpen(matched, prev, next) && hasValidClose(matched, i+lt) {
-			stack[matched] = append(stack[matched], len(out))
+			stack[matched] = append(stack[matched], outUnits)
 			i += lt
 			continue
 		}
 
 		out = append(out, runes[i])
+		outUnits += util.UTF16RuneLen(runes[i])
 		i++
 	}
 
@@ -205,7 +209,7 @@ func ParseHTML(text string) (string, []ParsedStyle) {
 	for _, m := range tagRe.FindAllStringSubmatchIndex(text, -1) {
 		chunk := text[pos:m[0]]
 		out.WriteString(chunk)
-		plainLen += utf8.RuneCountInString(chunk)
+		plainLen += util.UTF16Len(chunk)
 
 		raw := text[m[0]:m[1]]
 		tag := strings.ToLower(text[m[2]:m[3]])
@@ -274,7 +278,7 @@ func ParseHTML(text string) (string, []ParsedStyle) {
 
 	tail := text[pos:]
 	out.WriteString(tail)
-	plainLen += utf8.RuneCountInString(tail)
+	plainLen += util.UTF16Len(tail)
 
 	sort.Slice(elements, func(i, j int) bool { return elements[i].Start < elements[j].Start })
 	return out.String(), elements

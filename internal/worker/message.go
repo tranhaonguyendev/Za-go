@@ -6,7 +6,6 @@ import (
 	"sort"
 	"strconv"
 	"strings"
-	"unicode/utf8"
 
 	coreparse "github.com/tranhaonguyendev/za-go/internal/core"
 	"github.com/tranhaonguyendev/za-go/internal/util"
@@ -44,7 +43,7 @@ func NewParsedMessage(text string, style string, mention string, parseMode strin
 	for _, e := range parsed {
 		built = append(built, MessageStyle(e.Start, e.Length, e.Type, e.Color, coreparse.ParseTextSize(e.Size), false))
 	}
-	addDefaultFont(built, utf8.RuneCountInString(plain), "10")
+	addDefaultFont(built, util.UTF16Len(plain), "10")
 	if len(built) == 1 && len(baseStyles) == 0 {
 		m.Style = util.JSONString(map[string]any{"styles": []any{built[0]}, "ver": 0})
 	} else {
