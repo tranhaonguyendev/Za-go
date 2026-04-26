@@ -44,7 +44,7 @@ func (u *UploadAPI) UploadAttachment(filePath string, threadID string, threadTyp
 	urls := u.buildUploadURLs()
 	chunkBuf := make([]byte, uploadChunkSize)
 	uploadedBytes := int64(0)
-	fmt.Printf("Upload start: %s (%d bytes, %d chunks)\n", filepath.Base(filePath), fileSize, totalChunks)
+	// fmt.Printf("Upload start: %s (%d bytes, %d chunks)\n", filepath.Base(filePath), fileSize, totalChunks)
 	for chunkID := 1; chunkID <= totalChunks; chunkID++ {
 		n, readErr := f.Read(chunkBuf)
 		if n > 0 {
@@ -82,24 +82,24 @@ func (u *UploadAPI) UploadAttachment(filePath string, threadID string, threadTyp
 				}
 			}
 			if lastErr != nil {
-				fmt.Printf("\nUpload failed at chunk %d/%d: %v\n", chunkID, totalChunks, lastErr)
+				// fmt.Printf("\nUpload failed at chunk %d/%d: %v\n", chunkID, totalChunks, lastErr)
 				return u.failPayload(filePath, fileType, lastErr.Error(), maxType), nil
 			}
 			uploadedBytes += int64(n)
-			percent := float64(uploadedBytes) * 100 / float64(fileSize)
-			fmt.Printf("\rUploading %s: chunk %d/%d (%.0f%%)", filepath.Base(filePath), chunkID, totalChunks, percent)
+			// percent := float64(uploadedBytes) * 100 / float64(fileSize)
+			// fmt.Printf("\rUploading %s: chunk %d/%d (%.0f%%)", filepath.Base(filePath), chunkID, totalChunks, percent)
 			decoded, err := u.ParseRaw(data)
 			if err != nil {
-				fmt.Printf("\nUpload decode failed at chunk %d/%d: %v\n", chunkID, totalChunks, err)
+				// fmt.Printf("\nUpload decode failed at chunk %d/%d: %v\n", chunkID, totalChunks, err)
 				continue
 			}
 			m := util.AsMap(decoded)
 			if fileID := util.AsString(m["fileId"]); fileID != "" && fileID != "-1" {
-				fmt.Printf("\nUpload complete, waiting file URL for fileId=%s\n", fileID)
+				// fmt.Printf("\nUpload complete, waiting file URL for fileId=%s\n", fileID)
 				return u.waitUploadCallback(filePath, fileType, fileID, maxType, uploadWaitTimeout), nil
 			}
 			if photoID := util.AsString(m["photoId"]); photoID != "" && util.AsBool(m["finished"]) {
-				fmt.Printf("\nUpload complete with photoId=%s\n", photoID)
+				// fmt.Printf("\nUpload complete with photoId=%s\n", photoID)
 				m["ok"] = true
 				m["fileType"] = fileType
 				return m, nil
