@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
-	"os"
-	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -13,16 +11,9 @@ import (
 	"github.com/tranhaonguyendev/za-go/internal/util"
 )
 
-func (s *SendAPI) SendFile(fileURL string, threadID string, threadType core.ThreadType, fileName string, fileSize int, extension string, ttl int, localPath string) (any, error) {
+func (s *SendAPI) SendFile(fileURL string, threadID string, threadType core.ThreadType, fileName string, fileSize int, extension string) (any, error) {
 	var content []byte
-	if localPath != "" {
-		if b, err := os.ReadFile(localPath); err == nil {
-			content = b
-			if fileSize == 0 {
-				fileSize = len(content)
-			}
-		}
-	} else if fileSize == 0 {
+	if fileSize == 0 {
 		b, err := s.remoteGetBytes(fileURL)
 		if err != nil {
 			return nil, err
@@ -53,14 +44,13 @@ func (s *SendAPI) SendFile(fileURL string, threadID string, threadType core.Thre
 		"checksumSha": "",
 		"extension":   extension,
 		"totalSize":   fileSize,
-		"fileName":    defaultFileName(fileName, localPath),
+		"fileName":    defaultFileName(fileName, fileURL),
 		"clientId":    util.Now(),
 		"fType":       1,
 		"fileCount":   0,
 		"fdata":       "{}",
 		"fileUrl":     fileURL,
 		"zsource":     401,
-		"ttl":         ttl,
 	}
 
 	var endpoint string
@@ -96,13 +86,16 @@ func (s *SendAPI) SendFile(fileURL string, threadID string, threadType core.Thre
 	return s.parseThreadResponse(out, threadType, payload["clientId"])
 }
 
-func defaultFileName(fileName string, localPath string) string {
+func defaultFileName(fileName string, fileURL string) string {
 	if strings.TrimSpace(fileName) != "" {
 		return fileName
 	}
-	if localPath != "" {
-		base := filepath.Base(localPath)
-		if base != "" {
+	if parsed, err := url.Parse(fileURL); err == nil {
+		base := parsed.Path
+		if idx := strings.LastIndex(base, "/"); idx >= 0 {
+			base = base[idx+1:]
+		}
+		if strings.TrimSpace(base) != "" {
 			return base
 		}
 	}

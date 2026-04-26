@@ -283,9 +283,9 @@ func (z *ZaloAPI) SendImage(imageURL string, threadID string, threadType core.Th
 	z.refreshServices()
 	return z.send.SendImage(imageURL, threadID, threadType, width, height, message, ttl)
 }
-func (z *ZaloAPI) SendFile(fileURL string, threadID string, threadType core.ThreadType, fileName string, fileSize int, extension string, ttl int, localPath string) (any, error) {
+func (z *ZaloAPI) SendFile(fileURL string, threadID string, threadType core.ThreadType, fileName string, fileSize int, extension string) (any, error) {
 	z.refreshServices()
-	return z.send.SendFile(fileURL, threadID, threadType, fileName, fileSize, extension, ttl, localPath)
+	return z.send.SendFile(fileURL, threadID, threadType, fileName, fileSize, extension)
 }
 func (z *ZaloAPI) AddFriend(userID string, msg string, language string) (*worker.User, error) {
 	z.refreshServices()
