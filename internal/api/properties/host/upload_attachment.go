@@ -44,7 +44,7 @@ func (u *UploadAPI) UploadAttachment(filePath string, threadID string, threadTyp
 	urls := u.buildUploadURLs()
 	chunkBuf := make([]byte, uploadChunkSize)
 	uploadedBytes := int64(0)
-	// fmt.Printf("Upload start: %s (%d bytes, %d chunks)\n", filepath.Base(filePath), fileSize, totalChunks)
+	// fmt.Printf("Upload start: %s (\%d bytes, %d chunks)\n", filepath.Base(filePath), fileSize, totalChunks)
 	for chunkID := 1; chunkID <= totalChunks; chunkID++ {
 		n, readErr := f.Read(chunkBuf)
 		if n > 0 {
